@@ -10,4 +10,5 @@
 #28 Implement strStr()
 #30 Substring with Concatenation of All Words
 #31 Next Permutation
+#32 Longest Valid Paentheses
 
