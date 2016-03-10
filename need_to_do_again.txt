@@ -8,4 +8,6 @@
 #23 Merge k Sorted Lists (priority queue)
 #26 Remove Duplicates from Sorted Array
 #28 Implement strStr()
+#30 Substring with Concatenation of All Words
+#31 Next Permutation
 
