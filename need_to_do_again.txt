@@ -10,6 +10,8 @@
 #28 Implement strStr()
 #30 Substring with Concatenation of All Words
 #31 Next Permutation
-#32 Longest Valid Paentheses
+#32 Longest Valid Parentheses
 #37 Sudoku Solver
 #39 Combination Sum
+#41 First Missing Positive
+#42 Trapping Rain Water
