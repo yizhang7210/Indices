@@ -11,3 +11,5 @@ lengths = map calcCollatzLength [1..1000000]
 
 main = print $ elemIndex (maximum lengths) lengths
 
+-- Dynamic Programming/Memoization solution refer to question 15.
+
