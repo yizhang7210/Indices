@@ -1,0 +1,3 @@
+let t = [x | x<-[3..], x< 8];
+
+program doesn't hault.
