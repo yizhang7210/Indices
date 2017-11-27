@@ -2,8 +2,11 @@ module Main where
 
 import           Hands
 
-a = Card H Five
-b = Card S Ten
+a = Card Five H
+b = Card Ten S
+
+c :: Hand
+c = [a,b]
 main :: IO ()
 main = do
-    putStrLn . show $ a
+    putStrLn $ show c ++ "!!"
