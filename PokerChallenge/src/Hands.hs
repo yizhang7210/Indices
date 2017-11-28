@@ -27,28 +27,42 @@ getHandScore h
     | isFullHouse h = 3
     | isFlush h = 4
     | isStraight h = 5
+    | isThreeOfAKind h = 6
+    | isTwoPairs h = 7
+    | isOnePair h = 8
     | otherwise = 9
 
 isStraightFlush :: Hand -> Bool
 isStraightFlush h = isStraight h && isFlush h
 
 isStraight :: Hand -> Bool
-isStraight h = maximum ranks == iterate succ (minimum ranks) !! 4 where
-    ranks = map rank h
+isStraight h
+    | minimum ranks > Ten = False
+    | otherwise = maximum ranks == iterate succ (minimum ranks) !! 4 where
+        ranks = map rank h
 
 isFlush :: Hand -> Bool
 isFlush h = and $ map equalFirst suits where
-    equalFirst = (suit (head h) ==)
+    equalFirst = (==) . suit . head $ h
     suits = map suit h
 
 getRankCountDesc :: Hand -> [(Rank, Int)]
 getRankCountDesc h = sortBy rankDesc . toList $ fromListWith (+) [(x, 1) | x <- map rank h] where
-    rankDesc = \x y -> (snd y) `compare` (snd x)
+    rankDesc x y = (snd y) `compare` (snd x)
 
 isFourOfAKind :: Hand -> Bool
 isFourOfAKind h = snd (getRankCountDesc h !! 0) == 4
 
 isFullHouse :: Hand -> Bool
 isFullHouse h = snd (getRankCountDesc h !! 0) == 3 && snd (getRankCountDesc h !! 1) == 2
+
+isThreeOfAKind :: Hand -> Bool
+isThreeOfAKind h = snd (getRankCountDesc h !! 0) == 3 && not (isFullHouse h)
+
+isTwoPairs :: Hand -> Bool
+isTwoPairs h = snd (getRankCountDesc h !! 0) == 2 && snd (getRankCountDesc h !! 1) == 2
+
+isOnePair :: Hand -> Bool
+isOnePair h = snd (getRankCountDesc h !! 0) == 2 && not (isTwoPairs h)
 
 

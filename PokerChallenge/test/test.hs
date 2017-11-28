@@ -20,6 +20,18 @@ flush = [Card Two S, Card King S, Card Seven S, Card Ten S, Card Jack S]
 straight :: Hand
 straight = [Card Seven S, Card Eight H, Card Nine C, Card Ten S, Card Jack S]
 
+threeOfAKind :: Hand
+threeOfAKind  = [Card Ten S, Card Ten H, Card Ten C, Card Four C, Card Jack S]
+
+twoPairs :: Hand
+twoPairs  = [Card Ten S, Card Ten H, Card Eight C, Card Eight H, Card Jack S]
+
+onePair :: Hand
+onePair  = [Card Ten S, Card Ten H, Card Ace C, Card Eight H, Card Jack S]
+
+highCards :: Hand
+highCards  = [Card Ten S, Card Queen H, Card Ace C, Card Eight H, Card Jack S]
+
 -- Tests
 tests :: TestTree
 tests = testGroup "Tests" [unitTests]
@@ -35,6 +47,14 @@ unitTests = testGroup "Unit tests"
       testCase "Can detect flush not straight" $
         assertEqual "" 4 (getHandScore flush),
       testCase "Can detect straight not flush" $
-        assertEqual "" 5 (getHandScore straight)
+        assertEqual "" 5 (getHandScore straight),
+      testCase "Can detect three of a kind" $
+        assertEqual "" 6 (getHandScore threeOfAKind),
+      testCase "Can detect two pairs" $
+        assertEqual "" 7 (getHandScore twoPairs),
+      testCase "Can detect one pair" $
+        assertEqual "" 8 (getHandScore onePair),
+      testCase "Can detect high cards" $
+        assertEqual "" 9 (getHandScore highCards)
     ]
 
