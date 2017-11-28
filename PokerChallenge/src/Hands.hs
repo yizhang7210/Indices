@@ -16,7 +16,22 @@ instance Ord Card where
 
 type Hand = [Card]
 
-
 -- Methods
 getHandScore :: Hand -> Int
-getHandScore _ = 1
+getHandScore h
+    | isStraightFlush h = 1
+    | isFlush h = 4
+    | isStraight h = 5
+    | otherwise = 9
+
+isStraightFlush :: Hand -> Bool
+isStraightFlush h = isStraight h && isFlush h
+
+isStraight :: Hand -> Bool
+isStraight h = maximum ranks == iterate succ (minimum ranks) !! 4 where
+    ranks = map rank h
+
+isFlush :: Hand -> Bool
+isFlush h  = and $ map equalFirst suits where
+    equalFirst = (suit (head h) ==)
+    suits = map suit h
