@@ -6,7 +6,7 @@ a = Card Five H
 b = Card Ten S
 
 c :: Hand
-c = [a,b]
+c = newHand [a,b]
 main :: IO ()
 main = do
     putStrLn $ show c ++ "!!"

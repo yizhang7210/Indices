@@ -1,10 +1,11 @@
 module Hands where
 
 import Data.Map (fromListWith, toList)
-import Data.List (sortBy)
+import Data.List (sortBy, nub, intersect, union)
 
 -- Type definitions
-data Suit = C | D | H | S deriving (Show, Eq, Read);
+-- Card
+data Suit = C | D | H | S deriving (Show, Eq, Ord, Read);
 data Rank = Two | Three | Four | Five | Six | Seven | Eight | Nine |
     Ten | Jack | Queen | King | Ace
     deriving (Show, Eq, Read, Ord, Enum, Bounded);
@@ -15,9 +16,28 @@ data Card = Card {
 } deriving (Show, Eq, Read)
 
 instance Ord Card where
-    (Card r1 s1) `compare` (Card r2 s2) = r1 `compare` r2
+    (Card r1 s1) `compare` (Card r2 s2)
+        | r1 /= r2 = r1 `compare` r2
+        | otherwise = s1 `compare` s2
 
-type Hand = [Card]
+-- Hand
+newtype Hand = Hand {
+    cards :: [Card]
+} deriving (Show)
+
+newHand :: [Card] -> Hand
+newHand x
+    | length x /= 5 = error "A hand has exactly 5 cards"
+    | nub x /= x = error "A hand has to have unique cards"
+    | otherwise = Hand x
+
+instance Eq Hand where
+    h1 == h2 = cards h1 `intersect` cards h2 == cards h1 `union` cards h2
+
+instance Ord Hand where
+    h1 `compare` h2
+        | getHandScore h1 /= getHandScore h2 = getHandScore h2 `compare` getHandScore h1
+        | otherwise = EQ
 
 -- Methods
 getHandScore :: Hand -> Int
@@ -39,15 +59,15 @@ isStraight :: Hand -> Bool
 isStraight h
     | minimum ranks > Ten = False
     | otherwise = maximum ranks == iterate succ (minimum ranks) !! 4 where
-        ranks = map rank h
+        ranks = map rank . cards $ h
 
 isFlush :: Hand -> Bool
 isFlush h = and $ map equalFirst suits where
-    equalFirst = (==) . suit . head $ h
-    suits = map suit h
+    equalFirst = (==) . suit . head . cards $ h
+    suits = map suit . cards $ h
 
 getRankCountDesc :: Hand -> [(Rank, Int)]
-getRankCountDesc h = sortBy rankDesc . toList $ fromListWith (+) [(x, 1) | x <- map rank h] where
+getRankCountDesc h = sortBy rankDesc . toList $ fromListWith (+) [(x, 1) | x <- map rank (cards h)] where
     rankDesc x y = (snd y) `compare` (snd x)
 
 isFourOfAKind :: Hand -> Bool
