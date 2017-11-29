@@ -13,8 +13,9 @@ worsefourOfAKind = newHand [Card Two S, Card Two H, Card Two C, Card Two D, Card
 
 fullHouse = newHand [Card Two S, Card Two C, Card Seven S, Card Seven H, Card Seven D]
 worseFullHouse = newHand [Card Two S, Card Two C, Card Two D, Card Seven H, Card Seven D]
+equalFullHouse = newHand [Card Two H, Card Two C, Card Seven C, Card Seven H, Card Seven D]
 
-flush = newHand [Card Two S, Card King S, Card Seven S, Card Ten S, Card Jack S]
+flush = newHand [Card King S, Card Two S, Card Seven S, Card Ten S, Card Jack S]
 betterFlush = newHand [Card Queen S, Card King S, Card Seven S, Card Ten S, Card Jack S]
 
 straight = newHand [Card Seven S, Card Eight H, Card Nine C, Card Ten S, Card Jack S]
@@ -61,8 +62,30 @@ handScores = testGroup "Can detect different hand types tests"
 handCompares :: TestTree
 handCompares = testGroup "Can compare hands of the same type"
     [ testCase "Different hand types" $
-        assertBool "" (straightFlush > twoPairs)
+        assertBool "" (straightFlush > threeOfAKind),
+      testCase "Equal hands" $
+        assertBool "" (fullHouse == equalFullHouse),
+      testCase "Straight flush" $
+        assertBool "" (straightFlush < betterStraightFlush),
+      testCase "Four of a kind" $
+        assertBool "" (straightFlush < betterStraightFlush),
+      testCase "Full house" $
+        assertBool "" (fullHouse > worseFullHouse),
+      testCase "Flush not straight" $
+        assertBool "" (flush < betterFlush),
+      testCase "Straight  not flush" $
+        assertBool "" (straight < betterStraight),
+      testCase "Three of a kind" $
+        assertBool "" (threeOfAKind > worseThreeOfAKind),
+      testCase "Two pairs" $
+        assertBool "" (twoPairs < betterTwoPairs),
+      testCase "One pair" $
+        assertBool "" (onePair > worseOnePair),
+      testCase "High cards" $
+        assertBool "" (highCards < betterHighCards)
     ]
+
+
 
 
 

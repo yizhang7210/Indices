@@ -5,7 +5,7 @@ import Data.List (sortBy, nub, intersect, union)
 
 -- Type definitions
 -- Card
-data Suit = C | D | H | S deriving (Show, Eq, Ord, Read);
+data Suit = C | D | H | S deriving (Show, Eq, Read);
 data Rank = Two | Three | Four | Five | Six | Seven | Eight | Nine |
     Ten | Jack | Queen | King | Ace
     deriving (Show, Eq, Read, Ord, Enum, Bounded);
@@ -16,9 +16,7 @@ data Card = Card {
 } deriving (Show, Eq, Read)
 
 instance Ord Card where
-    (Card r1 s1) `compare` (Card r2 s2)
-        | r1 /= r2 = r1 `compare` r2
-        | otherwise = s1 `compare` s2
+    (Card r1 s1) `compare` (Card r2 s2) = r1 `compare` r2
 
 -- Hand
 newtype Hand = Hand {
@@ -32,17 +30,17 @@ newHand x
     | otherwise = Hand x
 
 instance Eq Hand where
-    h1 == h2 = cards h1 `intersect` cards h2 == cards h1 `union` cards h2
+    h1 == h2 = (getHandScore h1 == getHandScore h2) && h1 `closeCompare` h2 == EQ
 
 instance Ord Hand where
     h1 `compare` h2
         | getHandScore h1 /= getHandScore h2 = getHandScore h2 `compare` getHandScore h1
-        | otherwise = EQ
+        | otherwise = h1 `closeCompare` h2
 
 -- Methods
 getHandScore :: Hand -> Int
 getHandScore h
-    | isStraightFlush h = 1
+    | isStraight h && isFlush h = 1
     | isFourOfAKind h = 2
     | isFullHouse h = 3
     | isFlush h = 4
@@ -51,9 +49,6 @@ getHandScore h
     | isTwoPairs h = 7
     | isOnePair h = 8
     | otherwise = 9
-
-isStraightFlush :: Hand -> Bool
-isStraightFlush h = isStraight h && isFlush h
 
 isStraight :: Hand -> Bool
 isStraight h
@@ -68,7 +63,9 @@ isFlush h = and $ map equalFirst suits where
 
 getRankCountDesc :: Hand -> [(Rank, Int)]
 getRankCountDesc h = sortBy rankDesc . toList $ fromListWith (+) [(x, 1) | x <- map rank (cards h)] where
-    rankDesc x y = (snd y) `compare` (snd x)
+    rankDesc x y
+        | snd x /= snd y = snd y `compare` snd x
+        | otherwise = fst y `compare` fst x
 
 isFourOfAKind :: Hand -> Bool
 isFourOfAKind h = snd (getRankCountDesc h !! 0) == 4
@@ -84,5 +81,13 @@ isTwoPairs h = snd (getRankCountDesc h !! 0) == 2 && snd (getRankCountDesc h !! 
 
 isOnePair :: Hand -> Bool
 isOnePair h = snd (getRankCountDesc h !! 0) == 2 && not (isTwoPairs h)
+
+closeCompare :: Hand -> Hand -> Ordering
+closeCompare h1 h2 = compareInOrder (getRankCountDesc h1) (getRankCountDesc h2) where
+    compareInOrder [] [] = EQ
+    compareInOrder (x:xs) (y:ys)
+        | fst x == fst y = xs `compareInOrder` ys
+        | otherwise = fst x `compare` fst y
+
 
 
