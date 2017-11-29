@@ -1,6 +1,5 @@
-module Main where
-
-import           Hands
+import Data.List
+import Hands
 
 a = Card Five H
 b = Card Ten S

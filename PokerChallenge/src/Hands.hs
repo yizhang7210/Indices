@@ -89,5 +89,3 @@ closeCompare h1 h2 = compareInOrder (getRankCountDesc h1) (getRankCountDesc h2) 
         | fst x == fst y = xs `compareInOrder` ys
         | otherwise = fst x `compare` fst y
 
-
-
