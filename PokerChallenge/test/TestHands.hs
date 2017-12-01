@@ -82,6 +82,14 @@ handCompares = testGroup "Can compare hands of the same type"
       testCase "One pair" $
         assertBool "" (onePair > worseOnePair),
       testCase "High cards" $
-        assertBool "" (highCards < betterHighCards)
+        assertBool "" (highCards < betterHighCards),
+      testCase "Card by card comparison" $
+        assertEqual "" LT (flush `compareByCard` onePair)
     ]
+
+
+
+
+
+
 

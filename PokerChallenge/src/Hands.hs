@@ -1,7 +1,7 @@
 module Hands where
 
 import Data.Map (fromListWith, toList)
-import Data.List (sortBy, nub, intersect, union)
+import Data.List (sort, sortBy, nub, intersect, union, reverse)
 
 -- Type definitions
 -- Card
@@ -30,7 +30,7 @@ newHand x
     | otherwise = Hand x
 
 instance Eq Hand where
-    h1 == h2 = (getHandScore h1 == getHandScore h2) && h1 `closeCompare` h2 == EQ
+    h1 == h2 = h1 `compare` h2 == EQ
 
 instance Ord Hand where
     h1 `compare` h2
@@ -38,6 +38,21 @@ instance Ord Hand where
         | otherwise = h1 `closeCompare` h2
 
 -- Methods
+closeCompare :: Hand -> Hand -> Ordering
+closeCompare h1 h2 = compareInOrderBy fst (getRankCountDesc h1) (getRankCountDesc h2)
+
+compareInOrderBy :: (Ord b)=> (a -> b) -> [a] -> [a] -> Ordering
+compareInOrderBy _ [] [] = EQ
+compareInOrderBy f (x:xs) (y:ys)
+    | f x == f y = compareInOrderBy f xs ys
+    | otherwise = f x `compare` f y
+
+getRankCountDesc :: Hand -> [(Rank, Int)]
+getRankCountDesc h = sortBy rankDesc . toList $ fromListWith (+) [(x, 1) | x <- map rank (cards h)] where
+    rankDesc x y
+        | snd x /= snd y = snd y `compare` snd x
+        | otherwise = fst y `compare` fst x
+
 getHandScore :: Hand -> Int
 getHandScore h
     | isStraight h && isFlush h = 1
@@ -61,12 +76,6 @@ isFlush h = and $ map equalFirst suits where
     equalFirst = (==) . suit . head . cards $ h
     suits = map suit . cards $ h
 
-getRankCountDesc :: Hand -> [(Rank, Int)]
-getRankCountDesc h = sortBy rankDesc . toList $ fromListWith (+) [(x, 1) | x <- map rank (cards h)] where
-    rankDesc x y
-        | snd x /= snd y = snd y `compare` snd x
-        | otherwise = fst y `compare` fst x
-
 isFourOfAKind :: Hand -> Bool
 isFourOfAKind h = snd (getRankCountDesc h !! 0) == 4
 
@@ -82,10 +91,11 @@ isTwoPairs h = snd (getRankCountDesc h !! 0) == 2 && snd (getRankCountDesc h !! 
 isOnePair :: Hand -> Bool
 isOnePair h = snd (getRankCountDesc h !! 0) == 2 && not (isTwoPairs h)
 
-closeCompare :: Hand -> Hand -> Ordering
-closeCompare h1 h2 = compareInOrder (getRankCountDesc h1) (getRankCountDesc h2) where
-    compareInOrder [] [] = EQ
-    compareInOrder (x:xs) (y:ys)
-        | fst x == fst y = xs `compareInOrder` ys
-        | otherwise = fst x `compare` fst y
+compareByCard :: Hand -> Hand -> Ordering
+compareByCard h1 h2 = compareInOrderBy id sortedCards1 sortedCards2 where
+    sortedCards1 = reverse . sort . map rank $ cards h1
+    sortedCards2 = reverse . sort . map rank $ cards h2
+
+
+
 
