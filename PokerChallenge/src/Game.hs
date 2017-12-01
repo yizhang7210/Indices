@@ -12,8 +12,8 @@ getBestHandByRule r theCards = maximumBy comparator . map newHand $ zipWith (\\)
     twoCardCombos = [[c1, c2] | c1 <- theCards, c2 <- theCards \\ [c1]]
     comparator = getComparator r
 
-getWinningHandByRule :: Rule -> [Card] -> [[Card]] -> [Int]
-getWinningHandByRule r board pockets
+getWinningHandsByRule :: Rule -> [Card] -> [[Card]] -> [Int]
+getWinningHandsByRule r board pockets
     | length board /= 5 = error "There has to be 5 cards on the board"
     | length pockets > 10 || length pockets < 2 = error "Game has to be between 2-10 players"
     | not $ all ((2==) . length) pockets = error "Each player has to have 2 pocket cards"
