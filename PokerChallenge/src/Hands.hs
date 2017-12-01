@@ -1,7 +1,7 @@
 module Hands where
 
 import Data.Map (fromListWith, toList)
-import Data.List (sort, sortBy, nub, intersect, union, reverse)
+import Data.List
 
 -- Type definitions
 -- Card
@@ -17,6 +17,19 @@ data Card = Card {
 
 instance Ord Card where
     (Card r1 s1) `compare` (Card r2 s2) = r1 `compare` r2
+
+newCard :: String -> Card
+newCard (r:s:xs)
+    | xs /= [] = error "A card has the form 8s -- rank + suit"
+    | not $ r `elem` validRanks = error $ "rank has to be one of " ++ validRanks
+    | not $ s `elem` "cdhs" = error "suit has to be one of c, d, h, s"
+    | otherwise = Card (getRank r) (getSuit s) where
+        validRanks = "23456789TJQKA"
+        getRank ra = iterate succ Two !! (ra `elemIndices` validRanks !! 0)
+        getSuit 'c' = C
+        getSuit 'd' = D
+        getSuit 'h' = H
+        getSuit 's' = S
 
 -- Hand
 newtype Hand = Hand {

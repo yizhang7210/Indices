@@ -6,14 +6,14 @@ import Hands
 import Game
 import TestHands (fullHouse)
 
-sevenCards = [Card Two S, Card King S, Card Two C, Card Seven S, Card Queen H, Card Seven H, Card Seven D]
+sevenCards = map newCard ["Ks", "2c", "7s", "Qh", "7h", "2s", "7d"]
 
-boardCards = [Card Ace H, Card Eight S, Card Six S, Card Four S, Card Ace S]
-flush = [Card King S, Card Queen S]
-lowerFullHouse = [Card Eight C , Card Eight D]
-upperFullHouse = [Card Ace C , Card Six H]
-straightFlush = [Card Seven S , Card Five S]
-straight = [Card Seven S, Card Five H]
+boardCards = map newCard ["Ah", "8s", "6s", "4s", "As"]
+flush = map newCard ["Ks", "Qs"]
+lowerFullHouse = map newCard ["8c", "8d"]
+upperFullHouse = map newCard ["Ac", "6h"]
+straightFlush = map newCard ["7s", "5s"]
+straight = map newCard ["7s", "5h"]
 
 gameTests :: TestTree
 gameTests = testGroup "Poker game tests"

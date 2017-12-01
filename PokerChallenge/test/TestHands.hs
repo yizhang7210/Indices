@@ -5,40 +5,51 @@ import Test.Tasty.HUnit (assertEqual, assertBool, testCase)
 import Hands
 
 -- Example hands
-straightFlush = newHand [Card Seven S, Card Eight S, Card Nine S, Card Ten S, Card Jack S]
-betterStraightFlush = newHand [Card Queen H, Card King H, Card Jack H, Card Ten H, Card Nine H]
+straightFlush = newHand . map newCard $ ["7s", "8s", "9s", "Ts", "Js"]
+betterStraightFlush = newHand . map newCard $ ["Qh", "Kh", "Jh", "Th", "9h"]
 
-fourOfAKind = newHand [Card Five S, Card Five H, Card Five C, Card Five D, Card Four S]
-worsefourOfAKind = newHand [Card Two S, Card Two H, Card Two C, Card Two D, Card Jack S]
+fourOfAKind = newHand . map newCard $ ["5s", "5h", "5c", "5d", "4s"]
+worseFourOfAKind = newHand . map newCard $ ["2s", "2h", "2c", "2d", "Js"]
 
-fullHouse = newHand [Card Two S, Card Two C, Card Seven S, Card Seven H, Card Seven D]
-worseFullHouse = newHand [Card Two S, Card Two C, Card Two D, Card Seven H, Card Seven D]
-equalFullHouse = newHand [Card Two H, Card Two C, Card Seven C, Card Seven H, Card Seven D]
+fullHouse = newHand . map newCard $ ["2s", "2c", "7s", "7h", "7d"]
+worseFullHouse = newHand . map newCard $ ["2s", "2c", "2d", "7h", "7d"]
+equalFullHouse = newHand . map newCard $ ["2h", "2c", "7c", "7h", "7d"]
 
-flush = newHand [Card King S, Card Two S, Card Seven S, Card Ten S, Card Jack S]
-betterFlush = newHand [Card Queen S, Card King S, Card Seven S, Card Ten S, Card Jack S]
+flush = newHand . map newCard $ ["Ks", "2s", "7s", "Ts", "Js"]
+betterFlush = newHand . map newCard $ ["Qh", "Kh", "7h", "Th", "Jh"]
 
-straight = newHand [Card Seven S, Card Eight H, Card Nine C, Card Ten S, Card Jack S]
-betterStraight = newHand [Card Queen S, Card Eight H, Card Nine C, Card Ten S, Card Jack S]
+straight = newHand . map newCard $ ["7s", "8h", "9c", "Ts", "Jc"]
+betterStraight = newHand . map newCard $ ["Qs", "8h", "9c", "Ts", "Js"]
 
-threeOfAKind = newHand [Card Ten S, Card Ten H, Card Ten C, Card Four C, Card Jack S]
-worseThreeOfAKind = newHand [Card Ten S, Card Ten H, Card Ten C, Card Three C, Card Jack S]
+threeOfAKind = newHand . map newCard $ ["Ts", "Th", "Tc", "4c", "Js"]
+worseThreeOfAKind = newHand . map newCard $ ["Ts", "Th", "Tc", "3c", "Js"]
 
-twoPairs = newHand [Card Ten S, Card Ten H, Card Eight C, Card Eight H, Card Jack S]
-betterTwoPairs = newHand [Card Jack S, Card Jack H, Card Four C, Card Four H, Card Ten S]
+twoPairs = newHand . map newCard $ ["Ts", "Th", "8c", "8h", "Js"]
+betterTwoPairs = newHand . map newCard $ ["Js", "Jh", "4c", "4h", "8s"]
 
-onePair = newHand [Card Ten S, Card Ten H, Card Ace C, Card Eight H, Card Jack S]
-worseOnePair = newHand [Card Five S, Card Ace H, Card Five C, Card Eight H, Card Jack S]
+onePair = newHand . map newCard $ ["Ts", "Ac", "8h", "Th", "Js"]
+worseOnePair = newHand . map newCard $ ["5s", "Ah", "5c", "8h", "Js"]
 
-highCards = newHand [Card Seven S, Card Queen H, Card King C, Card Eight H, Card Jack S]
-betterHighCards = newHand [Card Ten S, Card Three H, Card Ace C, Card Five H, Card Jack S]
+highCards = newHand . map newCard $ ["7s", "Qh", "Kc", "8h", "Js"]
+betterHighCards = newHand . map newCard $ ["Ts", "3h", "Ac", "5h", "Js"]
 
 -- Tests
 handTests :: TestTree
-handTests = testGroup "Poker hand tests" [handScores, handCompares]
+handTests = testGroup "Poker hand tests" [newCardsTest, handScoresTest, handComparesTest]
 
-handScores :: TestTree
-handScores = testGroup "Can detect different hand types tests"
+newCardsTest :: TestTree
+newCardsTest = testGroup "Can construct new cards from string"
+    [
+      testCase "Numbered card" $
+        assertEqual "" (Card Four S) (newCard "4s"),
+      testCase "Face card" $
+        assertEqual "" (Card Queen H) (newCard "Qh"),
+      testCase "Ten" $
+        assertEqual "" (Card Ten C) (newCard "Tc")
+    ]
+
+handScoresTest :: TestTree
+handScoresTest = testGroup "Can detect different hand types tests"
     [ testCase "Straight flush" $
         assertEqual "" 1 (getHandScore straightFlush),
       testCase "Four of a kind" $
@@ -59,8 +70,8 @@ handScores = testGroup "Can detect different hand types tests"
         assertEqual "" 9 (getHandScore highCards)
     ]
 
-handCompares :: TestTree
-handCompares = testGroup "Can compare hands of the same type"
+handComparesTest :: TestTree
+handComparesTest = testGroup "Can compare hands of the same type"
     [ testCase "Different hand types" $
         assertBool "" (straightFlush > threeOfAKind),
       testCase "Equal hands" $
@@ -68,7 +79,7 @@ handCompares = testGroup "Can compare hands of the same type"
       testCase "Straight flush" $
         assertBool "" (straightFlush < betterStraightFlush),
       testCase "Four of a kind" $
-        assertBool "" (straightFlush < betterStraightFlush),
+        assertBool "" (fourOfAKind > worseFourOfAKind),
       testCase "Full house" $
         assertBool "" (fullHouse > worseFullHouse),
       testCase "Flush not straight" $
@@ -86,10 +97,4 @@ handCompares = testGroup "Can compare hands of the same type"
       testCase "Card by card comparison" $
         assertEqual "" LT (flush `compareByCard` onePair)
     ]
-
-
-
-
-
-
 
