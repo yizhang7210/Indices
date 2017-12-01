@@ -21,8 +21,8 @@ betterFlush = newHand . map newCard $ ["Qh", "Kh", "7h", "Th", "Jh"]
 straight = newHand . map newCard $ ["7s", "8h", "9c", "Ts", "Jc"]
 betterStraight = newHand . map newCard $ ["Qs", "8h", "9c", "Ts", "Js"]
 
-threeOfAKind = newHand . map newCard $ ["Ts", "Th", "Tc", "4c", "Js"]
-worseThreeOfAKind = newHand . map newCard $ ["Ts", "Th", "Tc", "3c", "Js"]
+threeOfAKind = newHand . map newCard $ ["Ts", "Th", "Tc", "6c", "7s"]
+worseThreeOfAKind = newHand . map newCard $ ["Ts", "Th", "Tc", "3c", "2s"]
 
 twoPairs = newHand . map newCard $ ["Ts", "Th", "8c", "8h", "Js"]
 betterTwoPairs = newHand . map newCard $ ["Js", "Jh", "4c", "4h", "8s"]

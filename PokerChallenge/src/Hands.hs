@@ -54,7 +54,7 @@ instance Ord Hand where
 closeCompare :: Hand -> Hand -> Ordering
 closeCompare h1 h2 = compareInOrderBy fst (getRankCountDesc h1) (getRankCountDesc h2)
 
-compareInOrderBy :: (Ord b)=> (a -> b) -> [a] -> [a] -> Ordering
+compareInOrderBy :: (Ord b) => (a -> b) -> [a] -> [a] -> Ordering
 compareInOrderBy _ [] [] = EQ
 compareInOrderBy f (x:xs) (y:ys)
     | f x == f y = compareInOrderBy f xs ys
@@ -81,7 +81,8 @@ getHandScore h
 isStraight :: Hand -> Bool
 isStraight h
     | minimum ranks > Ten = False
-    | otherwise = maximum ranks == iterate succ (minimum ranks) !! 4 where
+    | otherwise = sort ranks == aStraight where
+        aStraight = take 5 . iterate succ $ minimum ranks
         ranks = map rank . cards $ h
 
 isFlush :: Hand -> Bool
@@ -108,7 +109,5 @@ compareByCard :: Hand -> Hand -> Ordering
 compareByCard h1 h2 = compareInOrderBy id sortedCards1 sortedCards2 where
     sortedCards1 = reverse . sort . map rank $ cards h1
     sortedCards2 = reverse . sort . map rank $ cards h2
-
-
 
 

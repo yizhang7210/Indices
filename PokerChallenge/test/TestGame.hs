@@ -20,12 +20,12 @@ gameTests = testGroup "Poker game tests"
     [ testCase "Can determine the best hand out of 7 cards" $
         assertEqual "" fullHouse (getBestHandByRule COMP sevenCards),
       testCase "Can determine the best hand in Casino Royale" $
-        assertEqual "" [1, 3] (getWinningHandByRule COMP boardCards [flush, straightFlush, lowerFullHouse, straightFlush, upperFullHouse]),
+        assertEqual "" [1, 3] (getWinningHandsByRule COMP boardCards [flush, straightFlush, lowerFullHouse, straightFlush, upperFullHouse]),
       testCase "Can determine the best hand using Matching Ranks rule" $
-        assertEqual "" [2] (getWinningHandByRule MR boardCards [flush, lowerFullHouse, upperFullHouse, straightFlush]),
+        assertEqual "" [2] (getWinningHandsByRule MR boardCards [flush, lowerFullHouse, upperFullHouse, straightFlush]),
       testCase "Can determine the best hand using Straight rule" $
-        assertEqual "" [1] (getWinningHandByRule STR boardCards [flush, straight, lowerFullHouse, upperFullHouse]),
+        assertEqual "" [1] (getWinningHandsByRule STR boardCards [flush, straight, lowerFullHouse, upperFullHouse]),
       testCase "Can determine the best hand using Matching Suits rule" $
-        assertEqual "" [0] (getWinningHandByRule MS boardCards [flush, straight, lowerFullHouse, upperFullHouse])
+        assertEqual "" [0] (getWinningHandsByRule MS boardCards [flush, straight, lowerFullHouse, upperFullHouse])
     ]
 
