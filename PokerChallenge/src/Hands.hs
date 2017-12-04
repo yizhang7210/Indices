@@ -21,11 +21,11 @@ instance Ord Card where
 newCard :: String -> Card
 newCard (r:s:xs)
     | xs /= [] = error "A card has the form 8s -- rank + suit"
-    | not $ r `elem` validRanks = error $ "rank has to be one of " ++ validRanks
-    | not $ s `elem` "cdhs" = error "suit has to be one of c, d, h, s"
+    | r `notElem` validRanks = error $ "rank has to be one of " ++ validRanks
+    | s `notElem` "cdhs" = error "suit has to be one of c, d, h, s"
     | otherwise = Card (getRank r) (getSuit s) where
         validRanks = "23456789TJQKA"
-        getRank ra = iterate succ Two !! (ra `elemIndices` validRanks !! 0)
+        getRank ra = iterate succ Two !! head (ra `elemIndices` validRanks)
         getSuit 'c' = C
         getSuit 'd' = D
         getSuit 'h' = H
@@ -86,28 +86,29 @@ isStraight h
         ranks = map rank . cards $ h
 
 isFlush :: Hand -> Bool
-isFlush h = and $ map equalFirst suits where
+isFlush h = all equalFirst suits where
     equalFirst = (==) . suit . head . cards $ h
     suits = map suit . cards $ h
 
 isFourOfAKind :: Hand -> Bool
-isFourOfAKind h = snd (getRankCountDesc h !! 0) == 4
+isFourOfAKind h = snd (head (getRankCountDesc h)) == 4
 
 isFullHouse :: Hand -> Bool
-isFullHouse h = snd (getRankCountDesc h !! 0) == 3 && snd (getRankCountDesc h !! 1) == 2
+isFullHouse h = snd (head (getRankCountDesc h)) == 3 && snd (getRankCountDesc h !! 1) == 2
 
 isThreeOfAKind :: Hand -> Bool
-isThreeOfAKind h = snd (getRankCountDesc h !! 0) == 3 && not (isFullHouse h)
+isThreeOfAKind h = snd (head (getRankCountDesc h)) == 3 && not (isFullHouse h)
 
 isTwoPairs :: Hand -> Bool
-isTwoPairs h = snd (getRankCountDesc h !! 0) == 2 && snd (getRankCountDesc h !! 1) == 2
+isTwoPairs h = snd (head (getRankCountDesc h)) == 2 && snd (getRankCountDesc h !! 1) == 2
 
 isOnePair :: Hand -> Bool
-isOnePair h = snd (getRankCountDesc h !! 0) == 2 && not (isTwoPairs h)
+isOnePair h = snd (head (getRankCountDesc h)) == 2 && not (isTwoPairs h)
 
 compareByCard :: Hand -> Hand -> Ordering
 compareByCard h1 h2 = compareInOrderBy id sortedCards1 sortedCards2 where
-    sortedCards1 = reverse . sort . map rank $ cards h1
-    sortedCards2 = reverse . sort . map rank $ cards h2
+    sortedCards1 = sortBy (flip compare) . map rank $ cards h1
+    sortedCards2 = sortBy (flip compare) . map rank $ cards h2
+
 
 

@@ -3,7 +3,7 @@
 Setup
 -----
 - Clone this repo.
-- Make sure you have `stack` installed. 
+- Make sure you have `stack` installed.
 - If not, you can download it [here](https://docs.haskellstack.org/en/stable/README/#how-to-install).
 - Describe a poker table in a file `Game.table` according to `Game.table.example`.
 - First row should be a rule set, one of `COMP`, `MR`, `STR`, or `MS`
@@ -14,6 +14,17 @@ Setup
 or `Th` for `ten of hearts`, or `Kc` for `king of clubs`.
 - When you have the table setup, run `stack build && stack exec Poker`.
 - You'll see the winning hands of the table printed on the screen. :)
+
+
+Contribute
+----------
+- Clone this repo
+- Make sure you have `stack` installed.
+- If not, you can download it [here](https://docs.haskellstack.org/en/stable/README/#how-to-install).
+- Make sure you have `hlint` installed. If not, do `stack install hlint`.
+- `stack test` will run all tests.
+- `stack build && stack exec Poker` will run the program.
+- `hlint .` under PokerChallenge will lint the source and test files.
 
 
 Resources
