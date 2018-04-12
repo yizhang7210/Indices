@@ -16,3 +16,6 @@ A Poker interview challenge implemented in Haskell.
 
 #### ProjectEuler
 Some Project Euler solutions implemented in Haskell.
+
+#### SpockServer
+Following the tutorial of Spock, a Haskell web framework.
